@@ -21,5 +21,5 @@ after_build:
 - ps: $result.Report.IssueTypes.ChildNodes | % { $types = @{} } { $types[$_.Id] = if ($convert.ContainsKey($_.Severity)) { $convert[$_.Severity] } else { "Information" } }
 - ps: $result.Report.Issues.ChildNodes | % {$project = $_.Name; $_.ChildNodes | % {Add-AppveyorCompilationMessage -Category $types[$_.TypeId] -Message $_.Message -Line $_.Line -FileName $_.File -ProjectName $project}}
 test_script:
-- OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:"test --no-build Sample.Travel.Tests.cproj" -output:".\Sample.Travel.Coverage.xml" -oldstyle
+- OpenCover.Console.exe -register:user -target:"C:/Program Files/dotnet/dotnet.exe" -targetargs:"test --no-build Sample.Travel.Tests\Sample.Travel.Tests.cproj" -output:".\Sample.Travel.Coverage.xml" -oldstyle
 - codecov -f "Sample.Travel.Coverage.xml"
