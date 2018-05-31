@@ -10,7 +10,7 @@ install:
 - choco install opencover.portable
 - choco install codecov
 before_build:
-- nuget restore Sample.Travel.sln
+- msbuild /t
 build:
   verbosity: minimal
   project: Sample.Travel.sln
