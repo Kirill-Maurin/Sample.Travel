@@ -32,7 +32,7 @@ namespace Sample.Travel
             var result = new List<T>();
             var colors = Enumerable.Range(0, nodeList.Count).ToDictionary(i => nodeList[i], i => Color.White);
             var next = nodeList.Where(m => colors[m] == Color.White).GetEnumerator();
-            T current = null;
+            var current = nodeList[0];
             for (; ; )
             {
                 if (!next.MoveNext())
@@ -42,7 +42,7 @@ namespace Sample.Travel
                     colors[current] = Color.Black;
                     result.Add(current);
                     next = path.Pop();
-                    current = path.Count > 0 ? path.Peek().Current : null;
+                    current = path.Count > 0 ? path.Peek().Current : nodeList[0];
                     continue;
                 }
                 current = next.Current;
