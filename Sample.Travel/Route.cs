@@ -20,8 +20,10 @@ namespace Sample.Travel
                 throw new ArgumentException($@"Cycle in route: {string.Join(",", result.Select(w => w.Name))}", nameof(route));
             var r = result.ToImmutableList();
             for (var i = 1; i < r.Count; i++)
-                if (backward[r[i]] != r[i - 1])
-                    throw new ArgumentException($@"Invalid route: expected segment {backward[r[i]]} -> {r[i]}, but source is {r[i - 1]} "); 
+                if (!backward.TryGetValue(r[i], out var b))
+                    throw new ArgumentException($@"Missed segment {r[i - 1].Name} -> {r[i].Name} ");
+                else if (b != r[i - 1])
+                    throw new ArgumentException($@"Invalid route: expected segment {b.Name} -> {r[i].Name}, but source is {r[i - 1].Name} "); 
             return r.Skip(1).Select(w => (Source: backward[w], Destination: w));
         }
     }
