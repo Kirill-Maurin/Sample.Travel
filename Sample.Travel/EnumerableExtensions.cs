@@ -7,8 +7,6 @@ namespace Sample.Travel
 {
     public static class EnumerableExtensions
     {
-        public static IEnumerable<T> CreateEnumerable<T>(params T[] items) => items;
-
         /// <summary>
         /// Generic topology sort
         /// </summary>
@@ -28,26 +26,32 @@ namespace Sample.Travel
                 order = Enumerable.Empty<T>();
                 return true;
             }
-            var path = new Stack<IEnumerator<T>>();
+
+            IEnumerator<T> next = nodeList.GetEnumerator();
+            next.MoveNext();
+            var path = new Stack<IEnumerator<T>>(new [] {next});
             var result = new List<T>();
             var colors = Enumerable.Range(0, nodeList.Count).ToDictionary(i => nodeList[i], i => Color.White);
-            var next = nodeList.Where(m => colors[m] == Color.White).GetEnumerator();
+            next = nodeList.Where(m => colors[m] == Color.White).GetEnumerator();
             var current = nodeList[0];
             for (; ; )
             {
                 if (!next.MoveNext())
                 {
-                    if (path.Count == 0)
+                    if (path.Count == 1)
                         break;
+                    // ReSharper disable once AssignNullToNotNullAttribute
                     colors[current] = Color.Black;
                     result.Add(current);
                     next = path.Pop();
-                    current = path.Count > 0 ? path.Peek().Current : nodeList[0];
+                    current = path.Peek().Current;
                     continue;
                 }
                 current = next.Current;
+                // ReSharper disable once AssignNullToNotNullAttribute
                 if (colors[current] == Color.Gray)
                 {
+                    // ReSharper disable once PossibleNullReferenceException
                     order = path.Select(e => e.Current).TakeWhile(c => !c.Equals(current)).Concat(new[] { current });
                     return false;
                 }
